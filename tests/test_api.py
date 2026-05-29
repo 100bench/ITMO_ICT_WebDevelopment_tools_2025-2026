@@ -48,6 +48,18 @@ def test_register_login_and_me(client: TestClient) -> None:
     assert response.json()["email"] == "user@example.com"
 
 
+def test_protected_routes_require_bearer_token(client: TestClient) -> None:
+    response = client.get("/users/me")
+    assert response.status_code == 401
+
+
+def test_openapi_has_bearer_security_for_protected_routes(client: TestClient) -> None:
+    schema = client.get("/openapi.json").json()
+    assert "HTTPBearer" in schema["components"]["securitySchemes"]
+    assert schema["paths"]["/users/me"]["get"]["security"] == [{"HTTPBearer": []}]
+    assert "security" not in schema["paths"]["/auth/login"]["post"]
+
+
 def test_task_with_tag_and_time_entry(client: TestClient) -> None:
     headers = auth_headers(client)
     project_id = client.post("/projects", headers=headers, json={"title": "Study"}).json()["id"]

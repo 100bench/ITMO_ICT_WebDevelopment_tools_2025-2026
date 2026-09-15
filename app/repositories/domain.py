@@ -3,7 +3,7 @@
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.models import DailySchedule, Notification, Project, ScheduleItem, Tag, Task, TaskTag, TimeEntry
+from app.models import DailySchedule, Notification, ParsedPage, Project, ScheduleItem, Tag, Task, TaskTag, TimeEntry
 
 
 def get_project(db: Session, project_id: int, owner_id: int) -> Project | None:
@@ -85,6 +85,19 @@ def list_notifications(db: Session, owner_id: int) -> list[Notification]:
             .order_by(Notification.notify_at)
         )
     )
+
+
+def get_parsed_page(db: Session, page_id: int, owner_id: int) -> ParsedPage | None:
+    return db.scalar(select(ParsedPage).where(ParsedPage.id == page_id, ParsedPage.owner_id == owner_id))
+
+
+def list_parsed_pages(db: Session, owner_id: int) -> list[ParsedPage]:
+    query = (
+        select(ParsedPage)
+        .where(ParsedPage.owner_id == owner_id)
+        .order_by(ParsedPage.fetched_at.desc(), ParsedPage.id.desc())
+    )
+    return list(db.scalars(query))
 
 
 def time_by_task(db: Session, owner_id: int) -> list[tuple[int, str, int]]:

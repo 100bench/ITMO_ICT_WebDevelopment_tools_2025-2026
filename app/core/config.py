@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://time_manager:time_manager@localhost:5432/time_manager"
     jwt_secret: str = "change-me-in-production"
     jwt_expire_minutes: int = 120
+    parser_owner_email: str = "demo@example.com"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

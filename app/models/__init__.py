@@ -3,6 +3,7 @@
 from app.models.entities import (
     DailySchedule,
     Notification,
+    ParsedPage,
     Project,
     ScheduleItem,
     Tag,
@@ -17,6 +18,7 @@ from app.models.entities import (
 __all__ = [
     "DailySchedule",
     "Notification",
+    "ParsedPage",
     "Project",
     "ScheduleItem",
     "Tag",

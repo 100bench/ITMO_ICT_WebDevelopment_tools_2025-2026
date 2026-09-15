@@ -37,6 +37,7 @@ class User(Base):
     tags: Mapped[list["Tag"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
     schedules: Mapped[list["DailySchedule"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
     notifications: Mapped[list["Notification"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
+    parsed_pages: Mapped[list["ParsedPage"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
 
 
 class Project(Base):
@@ -148,3 +149,17 @@ class Notification(Base):
 
     owner: Mapped[User] = relationship(back_populates="notifications")
     task: Mapped[Task | None] = relationship(back_populates="notifications")
+
+
+class ParsedPage(Base):
+    __tablename__ = "parsed_pages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    url: Mapped[str] = mapped_column(Text, nullable=False)
+    title: Mapped[str] = mapped_column(String(512), nullable=False)
+    approach: Mapped[str] = mapped_column(String(32), nullable=False)
+    duration_ms: Mapped[int] = mapped_column(nullable=False)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    owner: Mapped[User] = relationship(back_populates="parsed_pages")

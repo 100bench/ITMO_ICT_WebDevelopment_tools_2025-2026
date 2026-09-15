@@ -12,4 +12,4 @@ RUN useradd --create-home --uid 10001 appuser
 COPY --chown=appuser:appuser . .
 USER appuser
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "parser_service.main:app", "--host", "0.0.0.0", "--port", "8001"]

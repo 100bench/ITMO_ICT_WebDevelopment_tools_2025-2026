@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from app.api import analytics, auth, notifications, parsed_pages, projects, schedules, tags, tasks, time_entries, users
+from app.api import analytics, auth, notifications, parsed_pages, parser, projects, schedules, tags, tasks, time_entries, users
 from app.core.config import settings
 
 app = FastAPI(title=settings.app_name)
@@ -17,6 +17,7 @@ app.include_router(schedules.router)
 app.include_router(notifications.router)
 app.include_router(analytics.router)
 app.include_router(parsed_pages.router)
+app.include_router(parser.router)
 
 
 @app.get("/health", tags=["System"])

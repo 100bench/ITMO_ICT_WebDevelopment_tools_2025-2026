@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     jwt_secret: str = "change-me-in-production"
     jwt_expire_minutes: int = 120
     parser_owner_email: str = "demo@example.com"
+    parser_service_url: str = "http://localhost:8001"
+    parser_service_token: str = "change-me-parser-token"
+    celery_broker_url: str = "redis://localhost:6379/0"
+    celery_result_backend: str = "redis://localhost:6379/1"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

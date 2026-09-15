@@ -2,6 +2,7 @@
 
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from datetime import datetime
 from html import unescape
 from time import perf_counter
 from urllib.parse import urlparse
@@ -31,6 +32,7 @@ class ParseResult:
     title: str
     approach: str
     duration_ms: int
+    fetched_at: datetime
 
 
 def split_range(limit: int, parts: int) -> list[tuple[int, int]]:
@@ -105,14 +107,16 @@ def save_parsed_page(
     duration_ms: int,
     *,
     owner_email: str | None = None,
+    owner_id: int | None = None,
     session_factory: sessionmaker[Session] = SessionLocal,
 ) -> ParseResult:
     """Сохраняет заголовок в ту же БД, которую использует Time Manager API."""
     email = owner_email or settings.parser_owner_email
     with session_factory() as db:
-        owner = db.scalar(select(User).where(User.email == email))
+        owner = db.get(User, owner_id) if owner_id is not None else db.scalar(select(User).where(User.email == email))
         if owner is None:
-            raise RuntimeError(f"Parser owner '{email}' does not exist")
+            identifier = f"id={owner_id}" if owner_id is not None else f"email={email}"
+            raise RuntimeError(f"Parser owner ({identifier}) does not exist")
         page = ParsedPage(
             owner_id=owner.id,
             url=url,
@@ -129,6 +133,7 @@ def save_parsed_page(
             title=page.title,
             approach=page.approach,
             duration_ms=page.duration_ms,
+            fetched_at=page.fetched_at,
         )
 
 

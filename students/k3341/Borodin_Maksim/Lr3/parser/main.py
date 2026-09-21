@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, HttpUrl
 
-from database import init_db, save_page
+from database.db import init_db, save_page
 
 
 class ParseRequest(BaseModel):
@@ -14,6 +14,7 @@ class ParseRequest(BaseModel):
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    # инициализация выполняется до приёма первого запроса
     init_db()
     yield
 

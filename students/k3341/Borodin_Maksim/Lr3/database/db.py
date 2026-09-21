@@ -11,6 +11,7 @@ DATABASE_URL = os.getenv(
 
 def init_db() -> None:
     with psycopg.connect(DATABASE_URL) as connection:
+        # таблица создаётся при первом запуске parser-service
         connection.execute(
             """
             CREATE TABLE IF NOT EXISTS parsed_pages (

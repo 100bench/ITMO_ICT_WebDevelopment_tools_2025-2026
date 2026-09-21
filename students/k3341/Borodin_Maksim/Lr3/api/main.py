@@ -4,7 +4,7 @@ import httpx
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, HttpUrl
 
-from tasks import celery_app, parse_url
+from worker.celery_app import celery_app, parse_url
 
 
 PARSER_URL = os.getenv("PARSER_URL", "http://parser:8001")
@@ -25,6 +25,7 @@ def health() -> dict[str, str]:
 @app.post("/parse")
 async def parse_direct(data: ParseRequest) -> dict:
     try:
+        # parser — dns-имя сервиса внутри сети compose
         async with httpx.AsyncClient(timeout=20) as client:
             response = await client.post(
                 f"{PARSER_URL}/parse",
@@ -38,6 +39,7 @@ async def parse_direct(data: ParseRequest) -> dict:
 
 @app.post("/parse/async", status_code=status.HTTP_202_ACCEPTED)
 def parse_in_background(data: ParseRequest) -> dict[str, str]:
+    # delay публикует задачу в redis и сразу возвращает управление
     task = parse_url.delay(str(data.url))
     return {"task_id": task.id, "status": task.status}
 

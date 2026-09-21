@@ -1,6 +1,0 @@
-site_name: ЛР3 — Бородин Максим
-theme:
-  name: mkdocs
-nav:
-  - Отчёт: index.md
-

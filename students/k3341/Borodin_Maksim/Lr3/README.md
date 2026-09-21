@@ -2,6 +2,20 @@
 
 Минимальная реализация FastAPI + parser-service + PostgreSQL + Redis + Celery в Docker Compose.
 
+## Структура
+
+```text
+Lr3/
+├── api/        # публичные HTTP-маршруты
+├── parser/     # загрузка и разбор страниц
+├── worker/     # Celery и фоновая задача
+├── database/   # работа с PostgreSQL
+├── Dockerfile
+└── docker-compose.yml
+```
+
+Отчёт находится в отдельной ветке `docs`, общей для всех лабораторных работ.
+
 ## Запуск
 
 ```bash
@@ -34,6 +48,3 @@ curl http://localhost:8000/tasks/<task_id>
 ```bash
 docker compose down
 ```
-
-Файл `docs/index.md` содержит краткий отчёт для MkDocs.
-

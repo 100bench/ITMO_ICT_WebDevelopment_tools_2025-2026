@@ -11,8 +11,7 @@ Lr3/
 ├── worker/     # Celery и фоновая задача
 ├── database/   # работа с PostgreSQL
 ├── Dockerfile
-├── docker-compose.yml
-└── Makefile    # команды запуска
+└── docker-compose.yml
 ```
 
 Отчёт находится в отдельной ветке `docs`, общей для всех лабораторных работ.
@@ -21,10 +20,8 @@ Lr3/
 
 ```bash
 cd students/k3341/Borodin_Maksim/Lr3
-make run
+docker compose up --build -d
 ```
-
-Команда соберёт образы, запустит пять сервисов в фоновом режиме и покажет их статус. Логи можно открыть командой `make logs`.
 
 Swagger основного API: <http://localhost:8000/docs>.
 
@@ -49,5 +46,5 @@ curl http://localhost:8000/tasks/<task_id>
 Остановка:
 
 ```bash
-make down
+docker compose down
 ```

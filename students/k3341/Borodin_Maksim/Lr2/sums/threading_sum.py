@@ -1,7 +1,7 @@
 import threading
 from time import perf_counter
 
-from common import split_range
+from common.ranges import split_range
 
 
 def calculate_sum(start: int, end: int) -> int:
@@ -22,6 +22,7 @@ def main() -> None:
     ]
     for thread in threads:
         thread.start()
+    # главный поток ждёт завершения всех рабочих потоков
     for thread in threads:
         thread.join()
 

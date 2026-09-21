@@ -2,7 +2,7 @@ import sqlite3
 from pathlib import Path
 
 
-DB_PATH = Path(__file__).with_name("pages.db")
+DB_PATH = Path(__file__).parents[1] / "pages.db"
 
 
 def init_db() -> None:
@@ -21,6 +21,7 @@ def init_db() -> None:
 
 
 def save_page(url: str, title: str, method: str) -> None:
+    # соединение не передаётся между потоками и процессами
     init_db()
     with sqlite3.connect(DB_PATH, timeout=30) as connection:
         connection.execute(

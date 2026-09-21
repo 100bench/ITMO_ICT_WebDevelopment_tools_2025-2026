@@ -1,7 +1,7 @@
 import multiprocessing
 from time import perf_counter
 
-from common import split_range
+from common.ranges import split_range
 
 
 def calculate_sum(start: int, end: int) -> int:
@@ -9,6 +9,7 @@ def calculate_sum(start: int, end: int) -> int:
 
 
 def worker(start: int, end: int, queue: multiprocessing.Queue) -> None:
+    # очередь переносит результат из отдельного процесса
     queue.put(calculate_sum(start, end))
 
 

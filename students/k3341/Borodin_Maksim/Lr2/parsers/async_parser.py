@@ -3,8 +3,8 @@ from time import perf_counter
 
 import aiohttp
 
-from database import save_page
-from parser_common import URLS, get_title
+from common.database import save_page
+from common.parser import URLS, get_title
 
 
 async def parse_and_save(url: str) -> str:
@@ -20,6 +20,7 @@ async def parse_and_save(url: str) -> str:
 
 async def main() -> None:
     started = perf_counter()
+    # сетевые ожидания перекрываются в одном event loop
     await asyncio.gather(*(parse_and_save(url) for url in URLS))
     print(f"Asyncio parser: {perf_counter() - started:.3f} сек.")
 

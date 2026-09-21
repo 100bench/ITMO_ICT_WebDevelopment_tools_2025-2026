@@ -2,12 +2,16 @@
 
 Простая реализация задания по `threading`, `multiprocessing` и `asyncio`.
 
-## Файлы
+## Структура
 
-- `sum_*.py` — три варианта подсчёта суммы `1..10^13`;
-- `parser_*.py` — три варианта параллельного парсинга;
-- `database.py` — сохранение заголовков страниц в SQLite;
-- `docs/index.md` — отчёт для MkDocs.
+```text
+Lr2/
+├── common/    # диапазоны, HTML и работа с БД
+├── sums/      # три способа подсчёта суммы
+└── parsers/   # три способа параллельного парсинга
+```
+
+Отчёт вынесен в отдельную ветку `docs`, где собрана документация всех лабораторных работ.
 
 ## Запуск
 
@@ -17,16 +21,13 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-python sum_threading.py
-python sum_multiprocessing.py
-python sum_async.py
+python -m sums.threading_sum
+python -m sums.multiprocessing_sum
+python -m sums.async_sum
 
-python parser_threading.py
-python parser_multiprocessing.py
-python parser_async.py
-
-mkdocs serve
+python -m parsers.threading_parser
+python -m parsers.multiprocessing_parser
+python -m parsers.async_parser
 ```
 
 Результаты парсинга сохраняются в автоматически создаваемый файл `pages.db`.
-

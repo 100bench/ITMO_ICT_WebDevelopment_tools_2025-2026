@@ -8,8 +8,7 @@
 Lr2/
 ├── common/    # диапазоны, HTML и работа с БД
 ├── sums/      # три способа подсчёта суммы
-├── parsers/   # три способа параллельного парсинга
-└── Makefile   # команды запуска
+└── parsers/   # три способа параллельного парсинга
 ```
 
 Отчёт вынесен в отдельную ветку `docs`, где собрана документация всех лабораторных работ.
@@ -18,9 +17,17 @@ Lr2/
 
 ```bash
 cd students/k3341/Borodin_Maksim/Lr2
-make run
-```
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-Команда сама создаст `.venv`, установит зависимости и запустит все шесть вариантов. Отдельно можно выполнить `make sums` или `make parsers`.
+python -m sums.threading_sum
+python -m sums.multiprocessing_sum
+python -m sums.async_sum
+
+python -m parsers.threading_parser
+python -m parsers.multiprocessing_parser
+python -m parsers.async_parser
+```
 
 Результаты парсинга сохраняются в автоматически создаваемый файл `pages.db`.

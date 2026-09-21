@@ -1,9 +1,0 @@
-.git
-.venv
-.env
-__pycache__
-*.pyc
-.pytest_cache
-docs
-postman
-tests

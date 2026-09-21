@@ -589,25 +589,21 @@
 <p><strong>Студент:</strong> Бородин М. А.<br>
 <strong>Группа:</strong> К3341<br>
 <strong>Код:</strong> <a href="https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/tree/lab-2/students/k3341/Borodin_Maksim/Lr2"><code>students/k3341/Borodin_Maksim/Lr2</code></a><br>
-<strong>Коммит:</strong> <a href="https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/e8d7481"><code>e8d7481</code></a></p>
+<strong>Коммит:</strong> <a href="https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/8ed6c3c"><code>8ed6c3c</code></a></p>
 <h2 id="_1">Цель<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>Сравнить <code>threading</code>, <code>multiprocessing</code> и <code>asyncio</code> на вычислительной и сетевой задачах.</p>
 <h2 id="_2">Структура<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>students/k3341/Borodin_Maksim/Lr2/
-├── common/
-│   ├── ranges.py
-│   ├── parser.py
-│   └── database.py
-├── sums/
-│   ├── threading_sum.py
-│   ├── multiprocessing_sum.py
-│   └── async_sum.py
-├── parsers/
-│   ├── threading_parser.py
-│   ├── multiprocessing_parser.py
-│   └── async_parser.py
-├── Makefile
-└── requirements.txt
+├── sum_threading.py
+├── sum_multiprocessing.py
+├── sum_async.py
+├── parser_threading.py
+├── parser_multiprocessing.py
+├── parser_async.py
+├── common.py
+├── parser_common.py
+├── database.py
+└── docs/index.md
 </code></pre></div>
 <h2 id="1">Задача 1. Подсчёт суммы<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
 <p>Все три программы считают сумму от 1 до <code>10_000_000_000_000</code>. Функция <code>split_range()</code> делит диапазон на четыре непересекающиеся части, а <code>calculate_sum()</code> вычисляет каждую частичную сумму.</p>
@@ -627,15 +623,15 @@
 </thead>
 <tbody>
 <tr>
-<td><code>sums/threading_sum.py</code></td>
+<td><code>sum_threading.py</code></td>
 <td>четыре <code>threading.Thread</code>, ожидание через <code>join()</code></td>
 </tr>
 <tr>
-<td><code>sums/multiprocessing_sum.py</code></td>
+<td><code>sum_multiprocessing.py</code></td>
 <td>четыре процесса, результаты через <code>multiprocessing.Queue</code></td>
 </tr>
 <tr>
-<td><code>sums/async_sum.py</code></td>
+<td><code>sum_async.py</code></td>
 <td>четыре корутины, <code>create_task()</code> и <code>gather()</code></td>
 </tr>
 </tbody>
@@ -651,15 +647,15 @@
 <tbody>
 <tr>
 <td>threading</td>
-<td style="text-align: right;">0.000221 с</td>
+<td style="text-align: right;">0.000185 с</td>
 </tr>
 <tr>
 <td>multiprocessing</td>
-<td style="text-align: right;">0.080329 с</td>
+<td style="text-align: right;">0.078173 с</td>
 </tr>
 <tr>
 <td>asyncio</td>
-<td style="text-align: right;">0.000095 с</td>
+<td style="text-align: right;">0.000089 с</td>
 </tr>
 </tbody>
 </table>
@@ -672,7 +668,7 @@
 <li>сохраняет URL, заголовок и название подхода в таблицу <code>parsed_pages</code>;</li>
 <li>печатает результат.</li>
 </ol>
-<p>Для простого автономного запуска используется SQLite-файл <code>pages.db</code>. Его создаёт <code>common/database.py</code>. В парсере потоков применяется <code>ThreadPoolExecutor</code>, в процессах — <code>multiprocessing.Pool</code>, в асинхронном варианте — <code>aiohttp</code> и <code>asyncio.gather()</code>.</p>
+<p>Для простого автономного запуска используется SQLite-файл <code>pages.db</code>. Его создаёт <code>database.py</code>. В парсере потоков применяется <code>ThreadPoolExecutor</code>, в процессах — <code>multiprocessing.Pool</code>, в асинхронном варианте — <code>aiohttp</code> и <code>asyncio.gather()</code>.</p>
 <p>Контрольный замер трёх URL:</p>
 <table>
 <thead>
@@ -684,24 +680,32 @@
 <tbody>
 <tr>
 <td>threading</td>
-<td style="text-align: right;">0.276 с</td>
+<td style="text-align: right;">0.315 с</td>
 </tr>
 <tr>
 <td>multiprocessing</td>
-<td style="text-align: right;">0.463 с</td>
+<td style="text-align: right;">0.434 с</td>
 </tr>
 <tr>
 <td>asyncio</td>
-<td style="text-align: right;">0.274 с</td>
+<td style="text-align: right;">1.037 с</td>
 </tr>
 </tbody>
 </table>
 <p>Сетевые значения меняются от запуска к запуску. Потоки и корутины подходят для I/O-bound задачи, потому что позволяют выполнять другую работу во время ожидания сети. Процессы тоже работают, но требуют больше памяти и времени запуска.</p>
 <h2 id="_3">Запуск<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>students/k3341/Borodin_Maksim/Lr2
-make<span class="w"> </span>run
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+
+python<span class="w"> </span>sum_threading.py
+python<span class="w"> </span>sum_multiprocessing.py
+python<span class="w"> </span>sum_async.py
+python<span class="w"> </span>parser_threading.py
+python<span class="w"> </span>parser_multiprocessing.py
+python<span class="w"> </span>parser_async.py
 </code></pre></div>
-<p><code>Makefile</code> сам создаёт <code>.venv</code>, устанавливает зависимости и запускает все три варианта суммы и все три парсера. Для раздельного запуска есть <code>make sums</code> и <code>make parsers</code>.</p>
 <h2 id="_4">Вывод<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <ul>
 <li>потоки удобны для обычных блокирующих HTTP-запросов;</li>

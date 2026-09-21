@@ -623,22 +623,17 @@
 <p><strong>Студент:</strong> Бородин М. А.<br>
 <strong>Группа:</strong> К3341<br>
 <strong>Код:</strong> <a href="https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/tree/lab-3/students/k3341/Borodin_Maksim/Lr3"><code>students/k3341/Borodin_Maksim/Lr3</code></a><br>
-<strong>Коммит:</strong> <a href="https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/abd1c15"><code>abd1c15</code></a></p>
+<strong>Коммит:</strong> <a href="https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/46192b1"><code>46192b1</code></a></p>
 <h2 id="_1">Цель<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 <p>Упаковать FastAPI-приложение, парсер и PostgreSQL в Docker; реализовать прямой вызов парсера и фоновую обработку через Celery и Redis.</p>
 <h2 id="_2">Структура<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>students/k3341/Borodin_Maksim/Lr3/
-├── api/
-│   └── main.py
-├── parser/
-│   └── main.py
-├── worker/
-│   └── celery_app.py
-├── database/
-│   └── db.py
+├── api.py
+├── parser.py
+├── tasks.py
+├── database.py
 ├── Dockerfile
 ├── docker-compose.yml
-├── Makefile
 └── requirements.txt
 </code></pre></div>
 <h2 id="docker-compose">Сервисы Docker Compose<a class="headerlink" href="#docker-compose" title="Permanent link">&para;</a></h2>
@@ -681,7 +676,7 @@
 <p>Все Python-сервисы собираются одним небольшим <a href="https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/blob/lab-3/students/k3341/Borodin_Maksim/Lr3/Dockerfile"><code>Dockerfile</code></a>. Команду запуска каждого контейнера задаёт Compose. Приложения работают от пользователя <code>appuser</code>, а не от root.</p>
 <p>Compose создаёт общую сеть. Поэтому <code>api</code> обращается к <code>http://parser:8001</code>, parser — к хосту <code>db</code>, а Celery — к <code>redis:6379</code>. <code>localhost</code> внутри контейнера означал бы сам этот контейнер.</p>
 <h2 id="_3">Прямой вызов<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<p>Маршрут <code>POST /parse</code> в <code>api/main.py</code> принимает URL от клиента и передаёт его parser-service через <code>httpx.AsyncClient</code>.</p>
+<p>Маршрут <code>POST /parse</code> в <code>api.py</code> принимает URL от клиента и передаёт его parser-service через <code>httpx.AsyncClient</code>.</p>
 <div class="highlight"><pre><span></span><code>клиент -&gt; API -&gt; parser-service -&gt; сайт -&gt; PostgreSQL
 </code></pre></div>
 <p>Parser извлекает <code>&lt;title&gt;</code>, записывает строку в PostgreSQL и возвращает готовый результат. Клиент ждёт окончания операции.</p>
@@ -692,7 +687,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="celery">Вызов через Celery<a class="headerlink" href="#celery" title="Permanent link">&para;</a></h2>
-<p>Маршрут <code>POST /parse/async</code> вызывает <code>parse_url.delay(url)</code>. Настройка Celery и задача находятся в <code>worker/celery_app.py</code>. Celery помещает сообщение в Redis и сразу возвращает <code>task_id</code> с HTTP 202.</p>
+<p>Маршрут <code>POST /parse/async</code> вызывает <code>parse_url.delay(url)</code>. Celery помещает сообщение в Redis и сразу возвращает <code>task_id</code> с HTTP 202.</p>
 <div class="highlight"><pre><span></span><code>клиент -&gt; API -&gt; Redis -&gt; Celery worker -&gt; parser-service -&gt; PostgreSQL
 </code></pre></div>
 <p>Состояние проверяется через <code>GET /tasks/{task_id}</code>. Основные состояния: <code>PENDING</code>, <code>SUCCESS</code>, <code>FAILURE</code>.</p>
@@ -705,9 +700,8 @@
 <p>После выполнения тот же маршрут возвращает <code>SUCCESS</code> и результат парсинга.</p>
 <h2 id="_4">Запуск<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>students/k3341/Borodin_Maksim/Lr3
-make<span class="w"> </span>run
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>--build<span class="w"> </span>-d
 </code></pre></div>
-<p><code>Makefile</code> собирает образы, запускает все пять сервисов в фоне и выводит их статус. Дополнительные команды: <code>make logs</code>, <code>make ps</code> и <code>make down</code>.</p>
 <p>Swagger: <code>http://localhost:8000/docs</code>.</p>
 <p>Прямой запрос:</p>
 <div class="highlight"><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/parse<span class="w"> </span><span class="se">\</span>
@@ -731,8 +725,8 @@ curl<span class="w"> </span>http://localhost:8000/tasks/&lt;task_id&gt;
 </thead>
 <tbody>
 <tr>
-<td><code>make run</code></td>
-<td>сборка и запуск успешны</td>
+<td><code>docker compose config --quiet</code></td>
+<td>конфигурация валидна</td>
 </tr>
 <tr>
 <td>сборка образов</td>
@@ -760,7 +754,7 @@ curl<span class="w"> </span>http://localhost:8000/tasks/&lt;task_id&gt;
 </tr>
 </tbody>
 </table>
-<p>После проверки контейнеры остановлены через <code>make down</code>; volume PostgreSQL сохранён.</p>
+<p>После проверки контейнеры остановлены через <code>docker compose down</code>; volume PostgreSQL сохранён.</p>
 <h2 id="_6">Вывод<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <p>Docker обеспечивает одинаковую среду запуска, Compose объединяет сервисы в один оркестр, отдельный parser-service изолирует загрузку данных, а Celery с Redis позволяет выполнять долгую операцию в фоне, не удерживая HTTP-запрос клиента.</p>
 

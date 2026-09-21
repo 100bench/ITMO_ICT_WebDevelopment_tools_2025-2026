@@ -3,7 +3,7 @@
 **Студент:** Бородин М. А.<br>
 **Группа:** К3341<br>
 **Код:** [`students/k3341/Borodin_Maksim/Lr2`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/tree/lab-2/students/k3341/Borodin_Maksim/Lr2)<br>
-**Коммит:** [`8ed6c3c`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/8ed6c3c)
+**Коммит:** [`0ea8cfc`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/0ea8cfc)
 
 ## Цель
 
@@ -13,16 +13,18 @@
 
 ```text
 students/k3341/Borodin_Maksim/Lr2/
-├── sum_threading.py
-├── sum_multiprocessing.py
-├── sum_async.py
-├── parser_threading.py
-├── parser_multiprocessing.py
-├── parser_async.py
-├── common.py
-├── parser_common.py
-├── database.py
-└── docs/index.md
+├── common/
+│   ├── ranges.py
+│   ├── parser.py
+│   └── database.py
+├── sums/
+│   ├── threading_sum.py
+│   ├── multiprocessing_sum.py
+│   └── async_sum.py
+└── parsers/
+    ├── threading_parser.py
+    ├── multiprocessing_parser.py
+    └── async_parser.py
 ```
 
 ## Задача 1. Подсчёт суммы
@@ -45,17 +47,17 @@ students/k3341/Borodin_Maksim/Lr2/
 
 | Файл | Механизм |
 |---|---|
-| `sum_threading.py` | четыре `threading.Thread`, ожидание через `join()` |
-| `sum_multiprocessing.py` | четыре процесса, результаты через `multiprocessing.Queue` |
-| `sum_async.py` | четыре корутины, `create_task()` и `gather()` |
+| `sums/threading_sum.py` | четыре `threading.Thread`, ожидание через `join()` |
+| `sums/multiprocessing_sum.py` | четыре процесса, результаты через `multiprocessing.Queue` |
+| `sums/async_sum.py` | четыре корутины, `create_task()` и `gather()` |
 
 Контрольный замер:
 
 | Подход | Время |
 |---|---:|
-| threading | 0.000185 с |
-| multiprocessing | 0.078173 с |
-| asyncio | 0.000089 с |
+| threading | 0.000221 с |
+| multiprocessing | 0.080329 с |
+| asyncio | 0.000095 с |
 
 Здесь полезная работа очень короткая, поэтому измеряются в основном накладные расходы. Процессы запускаются дороже. `asyncio` не ускоряет CPU-bound работу и не выполняет Python-код на нескольких ядрах.
 
@@ -68,15 +70,15 @@ students/k3341/Borodin_Maksim/Lr2/
 3. сохраняет URL, заголовок и название подхода в таблицу `parsed_pages`;
 4. печатает результат.
 
-Для простого автономного запуска используется SQLite-файл `pages.db`. Его создаёт `database.py`. В парсере потоков применяется `ThreadPoolExecutor`, в процессах — `multiprocessing.Pool`, в асинхронном варианте — `aiohttp` и `asyncio.gather()`.
+Для простого автономного запуска используется SQLite-файл `pages.db`. Его создаёт `common/database.py`. В парсере потоков применяется `ThreadPoolExecutor`, в процессах — `multiprocessing.Pool`, в асинхронном варианте — `aiohttp` и `asyncio.gather()`.
 
 Контрольный замер трёх URL:
 
 | Подход | Время |
 |---|---:|
-| threading | 0.315 с |
-| multiprocessing | 0.434 с |
-| asyncio | 1.037 с |
+| threading | 0.276 с |
+| multiprocessing | 0.463 с |
+| asyncio | 0.274 с |
 
 Сетевые значения меняются от запуска к запуску. Потоки и корутины подходят для I/O-bound задачи, потому что позволяют выполнять другую работу во время ожидания сети. Процессы тоже работают, но требуют больше памяти и времени запуска.
 
@@ -88,12 +90,12 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-python sum_threading.py
-python sum_multiprocessing.py
-python sum_async.py
-python parser_threading.py
-python parser_multiprocessing.py
-python parser_async.py
+python -m sums.threading_sum
+python -m sums.multiprocessing_sum
+python -m sums.async_sum
+python -m parsers.threading_parser
+python -m parsers.multiprocessing_parser
+python -m parsers.async_parser
 ```
 
 ## Вывод

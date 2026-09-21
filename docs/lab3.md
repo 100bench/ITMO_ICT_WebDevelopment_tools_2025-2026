@@ -3,7 +3,7 @@
 **Студент:** Бородин М. А.<br>
 **Группа:** К3341<br>
 **Код:** [`students/k3341/Borodin_Maksim/Lr3`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/tree/lab-3/students/k3341/Borodin_Maksim/Lr3)<br>
-**Коммит:** [`46192b1`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/46192b1)
+**Коммит:** [`f964a7b`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/f964a7b)
 
 ## Цель
 
@@ -13,10 +13,14 @@
 
 ```text
 students/k3341/Borodin_Maksim/Lr3/
-├── api.py
-├── parser.py
-├── tasks.py
-├── database.py
+├── api/
+│   └── main.py
+├── parser/
+│   └── main.py
+├── worker/
+│   └── celery_app.py
+├── database/
+│   └── db.py
 ├── Dockerfile
 ├── docker-compose.yml
 └── requirements.txt
@@ -38,7 +42,7 @@ Compose создаёт общую сеть. Поэтому `api` обращае�
 
 ## Прямой вызов
 
-Маршрут `POST /parse` в `api.py` принимает URL от клиента и передаёт его parser-service через `httpx.AsyncClient`.
+Маршрут `POST /parse` в `api/main.py` принимает URL от клиента и передаёт его parser-service через `httpx.AsyncClient`.
 
 ```text
 клиент -> API -> parser-service -> сайт -> PostgreSQL
@@ -56,7 +60,7 @@ Parser извлекает `<title>`, записывает строку в Postgr
 
 ## Вызов через Celery
 
-Маршрут `POST /parse/async` вызывает `parse_url.delay(url)`. Celery помещает сообщение в Redis и сразу возвращает `task_id` с HTTP 202.
+Маршрут `POST /parse/async` вызывает `parse_url.delay(url)`. Настройка Celery и задача находятся в `worker/celery_app.py`. Celery помещает сообщение в Redis и сразу возвращает `task_id` с HTTP 202.
 
 ```text
 клиент -> API -> Redis -> Celery worker -> parser-service -> PostgreSQL

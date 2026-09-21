@@ -3,7 +3,7 @@
 **Студент:** Бородин М. А.<br>
 **Группа:** К3341<br>
 **Код:** [`students/k3341/Borodin_Maksim/Lr2`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/tree/lab-2/students/k3341/Borodin_Maksim/Lr2)<br>
-**Коммит:** [`0ea8cfc`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/0ea8cfc)
+**Коммит:** [`e8d7481`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/e8d7481)
 
 ## Цель
 
@@ -21,10 +21,12 @@ students/k3341/Borodin_Maksim/Lr2/
 │   ├── threading_sum.py
 │   ├── multiprocessing_sum.py
 │   └── async_sum.py
-└── parsers/
-    ├── threading_parser.py
-    ├── multiprocessing_parser.py
-    └── async_parser.py
+├── parsers/
+│   ├── threading_parser.py
+│   ├── multiprocessing_parser.py
+│   └── async_parser.py
+├── Makefile
+└── requirements.txt
 ```
 
 ## Задача 1. Подсчёт суммы
@@ -86,17 +88,10 @@ students/k3341/Borodin_Maksim/Lr2/
 
 ```bash
 cd students/k3341/Borodin_Maksim/Lr2
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-python -m sums.threading_sum
-python -m sums.multiprocessing_sum
-python -m sums.async_sum
-python -m parsers.threading_parser
-python -m parsers.multiprocessing_parser
-python -m parsers.async_parser
+make run
 ```
+
+`Makefile` сам создаёт `.venv`, устанавливает зависимости и запускает все три варианта суммы и все три парсера. Для раздельного запуска есть `make sums` и `make parsers`.
 
 ## Вывод
 

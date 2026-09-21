@@ -3,7 +3,7 @@
 **Студент:** Бородин М. А.<br>
 **Группа:** К3341<br>
 **Код:** [`students/k3341/Borodin_Maksim/Lr3`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/tree/lab-3/students/k3341/Borodin_Maksim/Lr3)<br>
-**Коммит:** [`f964a7b`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/f964a7b)
+**Коммит:** [`abd1c15`](https://github.com/100bench/ITMO_ICT_WebDevelopment_tools_2025-2026/commit/abd1c15)
 
 ## Цель
 
@@ -23,6 +23,7 @@ students/k3341/Borodin_Maksim/Lr3/
 │   └── db.py
 ├── Dockerfile
 ├── docker-compose.yml
+├── Makefile
 └── requirements.txt
 ```
 
@@ -83,8 +84,10 @@ Parser извлекает `<title>`, записывает строку в Postgr
 
 ```bash
 cd students/k3341/Borodin_Maksim/Lr3
-docker compose up --build -d
+make run
 ```
+
+`Makefile` собирает образы, запускает все пять сервисов в фоне и выводит их статус. Дополнительные команды: `make logs`, `make ps` и `make down`.
 
 Swagger: `http://localhost:8000/docs`.
 
@@ -110,7 +113,7 @@ curl http://localhost:8000/tasks/<task_id>
 
 | Проверка | Результат |
 |---|---|
-| `docker compose config --quiet` | конфигурация валидна |
+| `make run` | сборка и запуск успешны |
 | сборка образов | успешно |
 | healthcheck PostgreSQL, Redis и parser | healthy |
 | прямой запрос | HTTP 200, `Example Domain` |
@@ -118,7 +121,7 @@ curl http://localhost:8000/tasks/<task_id>
 | PostgreSQL | сохранены результаты обоих запросов |
 | пользователь worker | `appuser`, uid 1000 |
 
-После проверки контейнеры остановлены через `docker compose down`; volume PostgreSQL сохранён.
+После проверки контейнеры остановлены через `make down`; volume PostgreSQL сохранён.
 
 ## Вывод
 
